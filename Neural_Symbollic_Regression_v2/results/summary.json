@@ -1,0 +1,45 @@
+{
+    "overall": {
+        "total_runs": 24,
+        "successful": 24,
+        "failed": 0
+    },
+    "models": {
+        "GPLearn": {
+            "runs": 8,
+            "successful": 8,
+            "failed": 0,
+            "average_rmse": 0.08266602359589352,
+            "average_mae": 0.05841533585900255,
+            "average_r2": 0.8493800640949669,
+            "average_train_time": 14.523712927126326,
+            "average_inference_time": 9.402587602380663e-05,
+            "average_expression_complexity": 17.25,
+            "average_active_terms": 11.25
+        },
+        "NeuralSR": {
+            "runs": 8,
+            "successful": 8,
+            "failed": 0,
+            "average_rmse": 0.037074235525583366,
+            "average_mae": 0.02294718922348693,
+            "average_r2": 0.9923889487981796,
+            "average_train_time": 2.494176375126699,
+            "average_inference_time": 0.01921988536923891,
+            "average_expression_complexity": 8.875,
+            "average_active_terms": 8.875
+        },
+        "PySR": {
+            "runs": 8,
+            "successful": 8,
+            "failed": 0,
+            "average_rmse": 0.0033733797647733975,
+            "average_mae": 0.002434222041605665,
+            "average_r2": 0.9993502121942148,
+            "average_train_time": 36.874640619629645,
+            "average_inference_time": 0.0018597188754938543,
+            "average_expression_complexity": 16.125,
+            "average_active_terms": 10.5
+        }
+    }
+}
