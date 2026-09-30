@@ -1,127 +1,236 @@
-# ANSR v2 — Adaptive Neural Symbolic Regression
+# ANSR v2 — Neural Symbolic Regression
 
-**From neural approximation to interpretable mathematical equations.**
+**Learning complex functions with neural networks, then turning them back into equations.**
 
-Welcome to **ANSR v2**, the next step in our journey towards building efficient, reliable, and interpretable symbolic regression systems!
+ANSR v2 is the second iteration of my Neural Symbolic Regression framework, focused on making symbolic equation discovery more accurate, interpretable, and computationally practical.
 
-ANSR (Adaptive Neural Symbolic Regression) explores how deep learning and sparse mathematical modelling can work together to discover meaningful equations directly from data. Version 2 builds upon the foundation of v1, with a more refined framework for representation learning, equation recovery, and model evaluation.
+The main idea is to combine the representation learning capability of neural networks with the interpretability of sparse symbolic models. Instead of treating symbolic regression purely as a brute-force search problem, ANSR uses a learned representation as a starting point for recovering compact mathematical expressions.
 
-The goal is simple: **make equation discovery more accurate, interpretable, and computationally efficient, without losing the flexibility of neural networks.**
+> **Neural learning → structured representation → sparse recovery → interpretable equation**
 
-## What's New in v2?
+---
 
-Version 1 established the core neural-symbolic pipeline, combining neural network approximation with sparse regression for mathematical equation discovery. With v2, the focus shifts towards improving the overall discovery process, making it more flexible, robust, and extensible.
+## What changed from v1?
 
-| Feature               | ANSR v1                                                                     | ANSR v2                                                                        |
-| --------------------- | --------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
-| Neural representation | Interaction-aware neural approximation                                      | Enhanced representation learning and a more extensible discovery pipeline      |
-| Equation recovery     | LASSO-based sparse extraction                                               | Refined sparse recovery and symbolic equation evaluation                       |
-| Optimization          | Neural network hyperparameter tuning using Ray Tune and ASHA                | Improved scope for optimizing the equation discovery process                   |
-| Search strategy       | Predetermined feature construction and extraction                           | Foundation for more adaptive and flexible search                               |
-| Evaluation            | Prediction accuracy, noise robustness, symbolic recovery and generalization | Expanded evaluation and validation of recovered equations                      |
-| Research direction    | Neural approximation followed by sparse recovery                            | Towards adaptive search, efficient extraction, and scalable equation discovery |
+Version 1 established the basic neural-symbolic pipeline. With v2, the focus has shifted towards making the discovery pipeline more robust and easier to extend towards adaptive symbolic search.
 
-## Architecture Overview
+### Key upgrades
 
-ANSR v2 follows a neural-symbolic approach, where neural networks learn the underlying relationships in the data and symbolic methods recover compact mathematical expressions.
+|                    | ANSR v1                                          | ANSR v2                                                         |
+| ------------------ | ------------------------------------------------ | --------------------------------------------------------------- |
+| Representation     | Neural approximation of the target function      | Improved representation learning and symbolic recovery pipeline |
+| Equation recovery  | Sparse regression over generated representations | More structured and extensible symbolic recovery                |
+| Evaluation         | Prediction-focused evaluation                    | Prediction, equation structure, complexity and validation       |
+| Search             | Relatively fixed discovery process               | Designed to support adaptive search strategies                  |
+| Optimization       | Model/hyperparameter optimisation                | More emphasis on efficient discovery and computational budget   |
+| Research direction | Neural approximation + sparse recovery           | Adaptive search + efficient equation extraction                 |
 
-### 1. Data Processing and Representation Learning
+The goal of v2 is therefore not just to make the neural model stronger. It is to make the **whole equation discovery process smarter and more efficient**.
 
-The input dataset is processed and transformed into a suitable representation for learning. The neural component captures nonlinear relationships and interactions between input variables, providing a learned approximation of the underlying function.
+---
 
-### 2. Neural Function Approximation
+## Benchmark Performance
 
-A neural network learns a smooth approximation of the target function. This helps capture complex relationships and provides a useful foundation for subsequent symbolic recovery, particularly when working with noisy observations.
+ANSR was evaluated against established symbolic regression baselines including **PySR** and **GPLearn** on standard symbolic regression benchmark families.
 
-### 3. Symbolic Equation Recovery
+The benchmark suite currently covers:
 
-The learned representation is used to support the recovery of mathematical expressions through sparse regression and symbolic modelling. The objective is to identify a compact set of meaningful terms while maintaining predictive accuracy.
+* Nguyen
+* Keijzer
+* Vladislavleva
 
-### 4. Equation Evaluation and Validation
+Across the reported experiments, all **24 runs completed successfully**.
 
-Recovered expressions are evaluated for numerical accuracy, symbolic structure, complexity, and generalization. This provides a more complete picture of the quality of a discovered equation, rather than relying on prediction error alone.
+### Overall benchmark summary
 
-## Why v2?
+| Model        |       RMSE |        MAE |         R² | Train Time | Expression Complexity |
+| ------------ | ---------: | ---------: | ---------: | ---------: | --------------------: |
+| **NeuralSR** | **0.0306** | **0.0198** | **0.9915** | **3.08 s** |              **8.88** |
+| PySR         |    0.00337 |    0.00243 |    0.99935 |    36.99 s |                 16.12 |
+| GPLearn      |    0.08267 |    0.05842 |    0.84938 |    14.59 s |                 17.25 |
 
-The central motivation behind v2 is to move beyond simply fitting neural networks and extracting equations. We want to make the entire discovery process more intelligent and efficient.
+*Aggregated over 8 benchmark runs per model.*
 
-Some of the key improvements and research objectives include:
+A particularly interesting observation is the difference in computational cost. In this benchmark run, NeuralSR completed training in roughly **3 seconds on average**, compared with roughly **37 seconds for PySR**. At the same time, NeuralSR produced substantially lower average expression complexity than both comparison methods.
 
-* **Improved representation learning:** Better capture nonlinear interactions and provide useful representations for symbolic recovery.
-* **More reliable equation extraction:** Focus on obtaining interpretable and mathematically meaningful expressions, rather than just numerical approximations.
-* **Improved evaluation:** Consider predictive performance, equation complexity, symbolic fidelity, and generalization together.
-* **Extensible architecture:** Establish a foundation for incorporating more advanced search and optimization strategies.
+This highlights one of the main motivations behind ANSR: symbolic regression does not necessarily need to rely on an expensive search over a huge expression space.
+
+---
+
+## Benchmark Examples
+
+### Nguyen
+
+On the Nguyen benchmark family, NeuralSR consistently achieved high predictive accuracy.
+
+For example, on Nguyen-1:
+
+```text
+RMSE : 0.018911
+MAE  : 0.015133
+R²   : 0.999568
+Time : 5.950 s
+```
+
+On Nguyen-3:
+
+```text
+RMSE : 0.020532
+MAE  : 0.013934
+R²   : 0.999709
+Time : 3.620 s
+```
+
+These results show that the learned representation can capture highly nonlinear relationships while still allowing a symbolic expression to be recovered.
+
+### Keijzer
+
+On Keijzer-1:
+
+```text
+RMSE : 0.009475
+MAE  : 0.007303
+R²   : 0.992776
+Time : 3.124 s
+```
+
+and on Keijzer-2:
+
+```text
+RMSE : 0.013379
+MAE  : 0.006025
+R²   : 0.996146
+Time : 2.228 s
+```
+
+The model also produced relatively compact expressions with only 5 active terms on both examples.
+
+### Vladislavleva
+
+The more challenging multivariate benchmarks provide another useful test.
+
+For Vladislavleva-1:
+
+```text
+RMSE : 0.033256
+MAE  : 0.016855
+R²   : 0.966024
+Time : 3.432 s
+```
+
+and Vladislavleva-4:
+
+```text
+RMSE : 0.054053
+MAE  : 0.039785
+R²   : 0.982490
+Time : 2.406 s
+```
+
+## These experiments are particularly useful because they move beyond simple one-variable symbolic functions and test the approach on multivariate nonlinear relationships.
+
+## Real-World Validation
+
+Beyond synthetic symbolic regression benchmarks, the framework was also tested on real-world regression data.
+
+For the larger validation experiment, the dataset contained **20,640 samples and 8 features**. The recovered symbolic model achieved:
+
+```text
+RMSE : 0.5363
+MAE  : 0.3700
+R²   : 0.7805
+```
+
+with **28 active symbolic terms**.
+
+Statistical diagnostics were also performed on the recovered model, including F-test, Shapiro-Wilk, Breusch-Pagan and Durbin-Watson statistics.
+
+This part of the work is important because the objective is not only to recover equations from clean synthetic functions, but eventually to discover useful interpretable relationships from real datasets.
+
+---
+
+## Why ANSR?
+
+Traditional symbolic regression methods can require searching through a very large combinatorial space of operators, variables and expression structures.
+
+ANSR explores a different direction:
+
+**Learn first. Search smarter. Extract an equation.**
+
+The neural component provides a flexible representation of the underlying function, while sparse symbolic recovery pushes the solution back towards an interpretable mathematical form.
+
+This creates an interesting trade-off between:
+
+* predictive accuracy
+* symbolic complexity
+* computational cost
+* interpretability
+* generalisation
+
+---
 
 ## Future Work
 
-ANSR is an evolving research project, and there are several exciting directions we aim to explore next.
+The next stage of ANSR is moving towards a more adaptive symbolic discovery system.
 
-**1. Adaptive Symbolic Search**
+### Adaptive Search
 
-Develop a search mechanism that dynamically adapts its mathematical operators, candidate expressions, and search space based on the dataset and previously discovered equations.
+Instead of using the same symbolic search space for every problem, future versions will investigate dynamically selecting operators and expression structures based on the data and previously discovered candidates.
 
-**2. Efficient Equation Extraction**
+### Search-Space Routing
 
-Investigate more efficient sparse recovery and symbolic simplification strategies to reduce computational overhead while preserving equation accuracy and interpretability.
+Different problems may require very different mathematical structures. A future ANSR system could learn which parts of the symbolic search space are actually useful and avoid spending computation on irrelevant expressions.
 
-**3. Search-History Guided Learning**
+### Search-History Learning
 
-Explore how information from previously evaluated candidate equations can guide subsequent searches, reducing redundant computation and improving the discovery process.
+Previously evaluated equations contain useful information. Future versions will explore using search history to guide subsequent candidate generation and reduce repeated exploration.
 
-**4. Budget-Aware Equation Discovery**
+### Efficient Equation Extraction
 
-Introduce computationally aware search strategies that balance equation complexity, prediction accuracy, and available computational resources.
+Another major direction is reducing the cost of converting learned representations into clean symbolic equations, while maintaining accuracy and mathematical simplicity.
 
-**5. Broader Scientific Applications**
+### Budget-Aware Symbolic Regression
 
-Extend the framework to more challenging mathematical benchmarks and real-world scientific datasets, with an emphasis on discovering interpretable governing relationships.
+Ultimately, the aim is to make symbolic regression aware of its computational budget and dynamically balance:
 
-## Getting Started
+```text
+Accuracy  ↔  Complexity  ↔  Search Cost
+```
 
-Clone the repository:
+The long-term goal is an **adaptive symbolic regression system that learns not only the function, but also how to search for its equation efficiently.**
+
+---
+
+## Research Direction
+
+ANSR is still an active research project, and v2 is intended as a foundation for further experimentation rather than a final system.
+
+The broader direction is to investigate how **deep representation learning, sparse modelling and adaptive symbolic search** can work together for interpretable scientific machine learning.
+
+Research preprint:
+
+**Neural Symbolic Regression Using Deep Learning and Sparse Modeling**
+
+https://arxiv.org/abs/2609.01102
+
+---
+
+## Repository
 
 ```bash
 git clone https://github.com/ravikumar014/Neural-Symbolic-Regression.git
+
 cd Neural-Symbolic-Regression/Neural_Symbollic_Regression_v2
 ```
 
-Install the required dependencies:
+The repository contains the implementation, benchmark utilities, evaluation code and experiments for the ANSR framework.
 
-```bash
-pip install -r requirements.txt
-```
+---
 
-Refer to the individual scripts and configuration files in the repository for the available experiments and execution instructions.
+## What's next?
 
-## Repository Structure
+ANSR v2 is basically a step towards a bigger question:
 
-```text
-Neural_Symbollic_Regression_v2/
-│
-├── Configuration and model settings
-├── Neural representation learning
-├── Symbolic equation recovery
-├── Evaluation and experimentation
-├── Benchmarking and results
-└── Supporting utilities
-```
+> **Can a model learn how to search for mathematical equations, instead of blindly searching the entire symbolic space?**
 
-*The structure above is a conceptual overview; refer to the actual repository files for the current implementation.*
-
-## Research & Development
-
-ANSR v2 is part of an ongoing effort to explore the intersection of deep learning, sparse modelling, and symbolic equation discovery.
-
-The initial research explores neural networks as functional preconditioners for symbolic discovery, combining interaction-aware representations, sparse regression, and hyperparameter optimization. The accompanying research preprint is available here:
-
-**[Neural Symbolic Regression Using Deep Learning and Sparse Modelling — arXiv](https://arxiv.org/abs/2609.01102)**
-
-## Contributing
-
-This is an evolving research project, and contributions, suggestions, experiments, and constructive discussions are always welcome!
-
-Whether you're interested in neural networks, symbolic regression, mathematical optimization, or scientific machine learning, feel free to explore the repository, experiment with the framework, and share your ideas.
-
-The long-term vision is to build a symbolic regression framework that doesn't just discover equations, but learns to discover them **smarter, faster, and more reliably.**
-
-**Let's make mathematical discovery more accessible, interpretable, and efficient!**
+That is where the next versions are heading.
